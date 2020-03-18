@@ -1,19 +1,40 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Button @updateQuote="fetchNewQuote" />
+    <Quote :quote="kanyeQuote" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Button from "./components/Button.vue";
+import Quote from "./components/Quote.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
+    Button,
+    Quote
+  },
+  data: function() {
+    return {
+      kanyeQuote: "Click the above button to generate a Quote"
+    };
+  },
+  methods: {
+    fetchNewQuote: function() {
+      let appComponent = this;
+      let ajax = new XMLHttpRequest();
+      ajax.onreadystatechange = function() {
+        if (this.status == 200 && this.readyState == 4) {
+          let myQuote = JSON.parse(this.responseText);
+          appComponent.kanyeQuote = myQuote.quote;
+        }
+      };
+      ajax.open("GET", "https://api.kanye.rest/", true);
+      ajax.send();
+    }
   }
-}
+};
 </script>
 
 <style>
